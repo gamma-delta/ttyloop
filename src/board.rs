@@ -3,13 +3,18 @@ use aglet::{Coord, Direction4, Direction4Set, Grid, Rotation};
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Cell {
   inner: Direction4Set,
+  // used for the cute little 4-way rotating variant thing
+  variant: bool,
 }
 
 impl Cell {
   pub const DISPLAY_LEN: usize = 3;
 
   pub fn new(inner: Direction4Set) -> Self {
-    Self { inner }
+    Self {
+      inner,
+      variant: false,
+    }
   }
 
   pub fn rotated(self, rot: Rotation) -> Self {
@@ -22,7 +27,10 @@ impl Cell {
     for dir in self.inner.into_iter() {
       out |= dir.rotate_by(rot);
     }
-    Self { inner: out }
+    Self {
+      inner: out,
+      variant: !self.variant,
+    }
   }
 
   pub fn fits_with(self, other: Option<Cell>, dir: Direction4) -> bool {
@@ -33,7 +41,7 @@ impl Cell {
     my_light == their_light
   }
 
-  pub fn render(self) -> &'static str {
+  pub fn render(self, variant_4: bool) -> &'static str {
     let sides = self.inner.bits();
     match sides {
       0b0000 => "   ",
@@ -60,7 +68,17 @@ impl Cell {
       0b1011 => "─┴─",
 
       // Four
-      0b1111 => "─┼─",
+      0b1111 => {
+        if variant_4 {
+          if self.variant {
+            "─🮨─"
+          } else {
+            "─🮩─"
+          }
+        } else {
+          "─┼─"
+        }
+      }
 
       // make sure i caught all 15 by using the range
       16.. => unreachable!(),
@@ -80,7 +98,14 @@ impl Board {
 
   pub fn check_ok(&self) -> bool {
     for (pos, cell) in self.inner.iter() {
-      for dir in [Direction4::East, Direction4::South] {
+      // make sure i check that the top and left doesn't
+      // poke out of the board
+      let dirs = if pos.x == 0 || pos.y == 0 {
+        Direction4::DIRECTIONS.as_slice()
+      } else {
+        [Direction4::East, Direction4::South].as_slice()
+      };
+      for &dir in dirs {
         let neighbor = pos
           .offset4(dir)
           .and_then(|npos| self.inner.get(npos))

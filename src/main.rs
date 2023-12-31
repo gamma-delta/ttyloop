@@ -1,6 +1,8 @@
+use aglet::Coord;
 use cursive::{
   views::{
-    Button, Dialog, Layer, LinearLayout, NamedView, Panel, SliderView, TextView,
+    Button, Dialog, Layer, LinearLayout, NamedView, OnEventView, Panel,
+    SliderView, TextView,
   },
   Cursive, View,
 };
@@ -19,11 +21,11 @@ fn main() {
       LinearLayout::vertical()
         .child(NamedView::new(
           "width",
-          TheCoolerSliderView::new("Width", 5, 20),
+          TheCoolerSliderView::new("Width", 5, 20, 9),
         ))
         .child(NamedView::new(
           "height",
-          TheCoolerSliderView::new("Height", 5, 20),
+          TheCoolerSliderView::new("Height", 5, 20, 9),
         ))
         .child(Button::new("Play", on_play)),
     ),
@@ -42,19 +44,38 @@ fn on_play(siv: &mut Cursive) {
     .unwrap()
     .value();
 
-  siv.add_layer(hjkl(
-    Dialog::new().title("ttyloop").content(
-      LinearLayout::vertical()
-        .child(Panel::new(BoardView::new(w, h, None)))
-        .child(TextView::new(
-          "hjkl: move\n\
+  let board = generate::generate(w, h, fastrand::u64(..));
+
+  siv.add_layer(
+    OnEventView::new(hjkl(
+      Dialog::new().title("ttyloop").content(
+        LinearLayout::vertical()
+          .child(Panel::new(NamedView::new("board", BoardView::new(board))))
+          .child(TextView::new(
+            "hjkl/arrows: move\n\
           ui: rotate\n\
           n: new puzzle\n\
           c: configure\n\
-          q: quit",
-        )),
-    ),
-  ))
+          ctrl+C: quit",
+          )),
+      ),
+    ))
+    // the board handles hjlk ui
+    // .on_event('q', |s| {
+    //   s.quit();
+    // })
+    .on_event('c', |s| {
+      s.pop_layer();
+    })
+    .on_event('n', |s| {
+      let mut board_view = s.find_name::<BoardView>("board").unwrap();
+      let area = board_view.board().inner.area();
+
+      let new_board =
+        generate::generate(area.width, area.height, fastrand::u64(..));
+      board_view.clobber_board(new_board);
+    }),
+  )
 }
 
 fn hjkl<V: View>(view: V) -> HjklToDirectionWrapperView<V> {

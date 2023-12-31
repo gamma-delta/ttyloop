@@ -61,17 +61,24 @@ pub struct BoardView {
 }
 
 impl BoardView {
-  pub fn new(w: u32, h: u32, seed: Option<u64>) -> BoardView {
-    let board = crate::generate::generate(
-      w,
-      h,
-      seed.unwrap_or_else(|| fastrand::u64(..)),
-    );
+  pub fn new(board: Board) -> BoardView {
     BoardView {
       board,
       focused: Coord::ZERO,
       solved: false,
     }
+  }
+
+  pub fn clobber_board(&mut self, new_board: Board) {
+    self.solved = false;
+    // if !new_board.inner.area().contains(self.focused) {
+    //   self.focused = Coord::ZERO;
+    // }
+    self.board = new_board;
+  }
+
+  pub fn board(&self) -> &Board {
+    &self.board
   }
 }
 
@@ -85,7 +92,8 @@ impl View for BoardView {
 
   fn draw(&self, printer: &Printer) {
     for (pos, cell) in self.board.inner.iter() {
-      let text = cell.render();
+      // i've decided the variant looks weird
+      let text = cell.render(false);
 
       let fg = Color::RgbLowRes(5, 5, 5);
 
@@ -120,11 +128,6 @@ impl View for BoardView {
   fn on_event(&mut self, ev: Event) -> EventResult {
     match ev {
       Event::Char(ch) => match ch {
-        'q' => EventResult::with_cb(|siv| siv.quit()),
-        'n' => EventResult::with_cb(|siv| {
-          siv.pop_layer();
-        }),
-
         _ if "ui".contains(ch) && !self.solved => {
           let rot = match ch {
             'u' => Rotation::CounterClockwise,
@@ -175,18 +178,24 @@ pub struct TheCoolerSliderView {
 }
 
 impl TheCoolerSliderView {
-  pub fn new<S: Into<String>>(title: S, min: u32, max: u32) -> Self {
+  pub fn new<S: Into<String>>(
+    title: S,
+    min: u32,
+    max: u32,
+    start: u32,
+  ) -> Self {
     if !(max >= min) {
       panic!(
         "the cooler slider view max {} must be >= the min {}",
         max, min
       )
     }
+    let start = start.clamp(min, max);
     Self {
       title: title.into(),
       min,
       max,
-      val_offset: 0,
+      val_offset: start - min,
     }
   }
 
