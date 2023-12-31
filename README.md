@@ -23,6 +23,8 @@
 
 A terminal clone of the mobile game Loop.
 
+To win, turn each of the tiles such that there are no loose ends.
+
 ---
 
 I play this in my terminal with the [Iosevka](https://github.com/be5invis/Iosevka) font.
