@@ -3,6 +3,11 @@ name = "ttyloop"
 version = "0.1.0"
 edition = "2021"
 
+description = "Terminal clone of the mobile game Loop"
+license = "MIT"
+repository = "https://github.com/gamma-delta/ttyloop"
+categories = ["games"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
