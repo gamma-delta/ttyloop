@@ -32,7 +32,7 @@ pub fn generate(w: u32, h: u32, seed: u64) -> Board {
               get_single_direction_set(&vertical_edges, Direction4::West, x, y) |
               get_single_direction_set(&vertical_edges, Direction4::East, x + 1, y);
 
-      grid.insert(Coord::new(x, y), Cell::new(rotate_directions(&mut rng, directions)));
+      grid.insert(Coord::new(x, y), Cell::new(directions).spin(rng.i32(0..4)));
     })
   });
 
@@ -50,12 +50,6 @@ fn get_single_direction_set(edges: &Grid<Edge>, direction: Direction4, x: u32, y
   } else {
     Direction4Set::empty()
   }
-}
-
-fn rotate_directions(rng: &mut Rng, directions: Direction4Set) -> Direction4Set {
-  let rotation = rng.i32(0..4);
-
-  directions.iter().map(|d| d.rotate_by(rotation)).collect()
 }
 
 fn get_edge(edges: &Grid<Edge>, x: u32, y: u32) -> Edge {
