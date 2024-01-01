@@ -1,8 +1,6 @@
-use aglet::Coord;
 use cursive::{
   views::{
-    Button, Dialog, Layer, LinearLayout, NamedView, OnEventView, Panel,
-    SliderView, TextView,
+    Button, Dialog, LinearLayout, NamedView, OnEventView, Panel, TextView,
   },
   Cursive, View,
 };

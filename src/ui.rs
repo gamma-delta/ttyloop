@@ -3,14 +3,11 @@ use cursive::{
   direction::Direction,
   event::{Event, EventResult, Key},
   theme::{
-    BaseColor, BorderStyle, Color, ColorStyle, Effect, Palette, PaletteStyle,
-    Style, Theme,
+    BorderStyle, Color, ColorStyle, Effect, Palette, PaletteStyle,
+    Theme,
   },
   view::{CannotFocus, ViewWrapper},
-  views::{
-    Button, Dialog, LinearLayout, NamedView, Panel, SliderView, TextView,
-  },
-  Cursive, Printer, Vec2, View, With,
+  Printer, Vec2, View, With,
 };
 
 use crate::board::{Board, Cell};
