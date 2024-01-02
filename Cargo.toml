@@ -20,5 +20,5 @@ version = "0.20.0"
 default-features = false
 features = ["crossterm-backend"]
 
-[target.'cfg(unix)'.dependencies.cursive]
+[target.'cfg(not(windows))'.dependencies.cursive]
 version = "0.20.0"
