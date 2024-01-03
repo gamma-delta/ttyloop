@@ -52,6 +52,7 @@ fn on_play(siv: &mut Cursive) {
           .child(TextView::new(
             "hjkl/arrows: move\n\
           ui: rotate\n\
+          z: toggle error display\n\
           n: new puzzle\n\
           c: configure\n\
           ctrl+C: quit",

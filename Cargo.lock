@@ -9,7 +9,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e72da3ea1ad99b452f5b054554b432286085d1528c8339092ba9b93f39fa19d4"
 dependencies = [
  "enumflags2",
- "serde",
 ]
 
 [[package]]
@@ -213,7 +212,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3278c9d5fb675e0a51dabcf4c0d355f692b064171535ba72361be1528a9d8e8d"
 dependencies = [
  "enumflags2_derive",
- "serde",
 ]
 
 [[package]]
@@ -626,7 +624,7 @@ dependencies = [
 
 [[package]]
 name = "ttyloop"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "aglet",
  "cursive",

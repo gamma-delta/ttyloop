@@ -1,6 +1,6 @@
 [package]
 name = "ttyloop"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 
 description = "Terminal clone of the mobile game Loop"
@@ -11,7 +11,8 @@ categories = ["games"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-aglet = "0.5.1"
+aglet = { version = "0.5.1", default-features = false }
+cursive = "0.20.0"
 fastrand = "2.0.1"
 itertools = "0.12.0"
 
