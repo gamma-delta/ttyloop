@@ -3,8 +3,7 @@ use cursive::{
   direction::Direction,
   event::{Event, EventResult, Key},
   theme::{
-    BorderStyle, Color, ColorStyle, Effect, Palette, PaletteStyle,
-    Theme,
+    BorderStyle, Color, ColorStyle, Effect, Palette, PaletteStyle, Theme,
   },
   view::{CannotFocus, ViewWrapper},
   Printer, Vec2, View, With,
@@ -32,22 +31,50 @@ where
 
   fn wrap_on_event(&mut self, ev: Event) -> EventResult {
     let ev_result = self.view.on_event(ev.clone());
-    if let (
-      EventResult::Ignored,
-      Event::Char('h') | Event::Char('j') | Event::Char('k') | Event::Char('l'),
-    ) = (&ev_result, &ev)
-    {
-      let dir = match ev {
-        Event::Char('h') => Key::Left,
-        Event::Char('j') => Key::Down,
-        Event::Char('k') => Key::Up,
-        Event::Char('l') => Key::Right,
-        _ => unreachable!(),
-      };
-      self.view.on_event(Event::Key(dir))
-    } else {
-      ev_result
+    if !matches!(&ev_result, EventResult::Ignored) {
+      return ev_result;
     }
+
+    // tuple enum variants are secretly 1-argument functions
+    // which means you can pull shit like this
+    type EventCtor = fn(Key) -> Event;
+    let (ch, ctor) = match &ev {
+      Event::Char(c) => (
+        c,
+        if c.is_ascii_uppercase() {
+          Event::Shift
+        } else {
+          Event::Key
+        } as EventCtor,
+      ),
+      Event::CtrlChar(c) => (
+        c,
+        if c.is_ascii_uppercase() {
+          Event::CtrlShift
+        } else {
+          Event::Ctrl
+        } as EventCtor,
+      ),
+      Event::AltChar(c) => (
+        c,
+        if c.is_ascii_uppercase() {
+          Event::AltShift
+        } else {
+          Event::Alt
+        } as EventCtor,
+      ),
+      _ => return EventResult::Ignored,
+    };
+
+    let dir = match ch {
+      'h' => Key::Left,
+      'j' => Key::Down,
+      'k' => Key::Up,
+      'l' => Key::Right,
+      _ => return EventResult::Ignored,
+    };
+    let the_cooler_event = ctor(dir);
+    self.view.on_event(the_cooler_event)
   }
 }
 
