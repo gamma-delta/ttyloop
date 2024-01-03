@@ -118,6 +118,32 @@ impl Board {
     true
   }
 
+  pub fn check_single_cell_ok(&self, pos: Coord) -> bool {
+    let Some(&here) = self.inner.get(pos) else {
+      return true;
+    };
+    for dir in Direction4::DIRECTIONS {
+      let neighbor = pos
+        .offset4(dir)
+        .and_then(|npos| self.inner.get(npos))
+        .copied();
+      let my_light = here.inner.contains(Direction4Set::from_flag(dir));
+      let their_light = neighbor
+        .map(|neighbor| {
+          neighbor
+            .inner
+            .contains(Direction4Set::from_flag(dir.flip()))
+        })
+        .unwrap_or(false);
+      let fits = (!my_light) || (my_light && their_light);
+      if !fits {
+        return false;
+      }
+    }
+
+    true
+  }
+
   pub fn get_or_default(&mut self, coord: Coord) -> &mut Cell {
     self.inner.get_or_insert(coord, Cell::default())
   }

@@ -82,6 +82,7 @@ pub struct BoardView {
   board: Board,
   focused: Coord,
   solved: bool,
+  error_view: bool,
 }
 
 impl BoardView {
@@ -90,11 +91,13 @@ impl BoardView {
       board,
       focused: Coord::ZERO,
       solved: false,
+      error_view: false,
     }
   }
 
   pub fn clobber_board(&mut self, new_board: Board) {
     self.solved = false;
+    self.error_view = false;
     // if !new_board.inner.area().contains(self.focused) {
     //   self.focused = Coord::ZERO;
     // }
@@ -119,7 +122,16 @@ impl View for BoardView {
       // i've decided the variant looks weird
       let text = cell.render(false);
 
-      let fg = Color::RgbLowRes(5, 5, 5);
+      let error_color = if self.error_view {
+        !self.board.check_single_cell_ok(pos)
+      } else {
+        false
+      };
+      let fg = if error_color {
+        Color::RgbLowRes(5, 0, 0)
+      } else {
+        Color::RgbLowRes(5, 5, 5)
+      };
 
       let bg = if self.solved {
         Color::TerminalDefault
@@ -163,6 +175,10 @@ impl View for BoardView {
           if self.board.check_ok() {
             self.solved = true;
           }
+          EventResult::consumed()
+        }
+        'z' => {
+          self.error_view = !self.error_view;
           EventResult::consumed()
         }
 
