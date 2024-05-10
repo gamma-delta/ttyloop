@@ -15,3 +15,11 @@ aglet = { version = "0.5.1", default-features = false }
 cursive = "0.20.0"
 fastrand = "2.0.1"
 itertools = "0.12.0"
+
+[target.'cfg(windows)'.dependencies.cursive]
+version = "0.20.0"
+default-features = false
+features = ["crossterm-backend"]
+
+[target.'cfg(not(windows))'.dependencies.cursive]
+version = "0.20.0"
