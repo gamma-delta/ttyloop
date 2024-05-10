@@ -117,6 +117,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "cursive-hjkl"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b8e92d265c97e681b17df892059e7ab0b2ecb049cfb8df78fa9bbaf208eaddbc"
+dependencies = [
+ "cursive",
+]
+
+[[package]]
 name = "cursive_core"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -628,6 +637,7 @@ version = "0.2.0"
 dependencies = [
  "aglet",
  "cursive",
+ "cursive-hjkl",
  "fastrand",
  "itertools",
 ]

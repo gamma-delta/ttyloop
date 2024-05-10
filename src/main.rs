@@ -4,7 +4,8 @@ use cursive::{
   },
   Cursive, View,
 };
-use ui::{BoardView, HjklToDirectionWrapperView, TheCoolerSliderView};
+use cursive_hjkl::HjklToDirectionWrapperView;
+use ui::{BoardView, TheCoolerSliderView};
 
 mod board;
 mod generate;
